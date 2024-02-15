@@ -12,7 +12,7 @@ The following **required** features are completed:
 - [x] Modifies title in head so that the tab has a unique name, (e.g. About Me). (1pts)
 - [x] Uses a mix of headers, paragraphs, and div's. (3pts)
 - [x] Includes at least 3 paragraphs. (3pts)
-- [ ] Includes at least one image. (2pts)
+- [x] Includes at least one image. (2pts)
 - [ ] Includes a .css file to style with at least 4 ways to format the elements in the html. (3pts)
 - [ ] Includes a link that directs to your Github account (can be main account or specifically to your Platform_Computing Repo). (3pts)
 
