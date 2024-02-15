@@ -1,8 +1,7 @@
 # Platform_Computing
 # About Me
 
-This is a project based course focusing on the cross-platform development of mobile
-and online web applications.
+This is a project familiarizing with html features and github.
 
 Time spent: **2** hours spent in total
 
@@ -25,7 +24,7 @@ The following **bonus** features are implemented:
 
 ## Screenshot and/or Video Walkthrough
 
-<img src="./images/Desktop Screenshot 2024.02.14 - 21.43.19.10.png" />
+<img src="./images/earstucked.jpg" />
 
 
 ## Notes:
