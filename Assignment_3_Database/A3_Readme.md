@@ -1,8 +1,8 @@
 # Metric Tracker with Database
 
-PROVIDE OVERVIEW OF ASSIGNMENT HERE
+Use assignment 2 metric tracker and modify it to save metrics on a database, then retreiving the metrics from the database so that it can process it and display it.
 
-Time spent: **NUMBER_HOURS_SPENT** hours spent in total
+Time spent: **3** hours spent in total
 
 ## Features
 
