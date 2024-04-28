@@ -3,10 +3,16 @@ const { Builder, By } = require('selenium-webdriver');
 async function main() {
     const driver = await new Builder().forBrowser('chrome').build();
 
+    let startTime = new Date(); // Store the start time
+
     try {
         await processPage(driver);
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for the page to be visible for at least 1 second
     } finally {
         await driver.quit();
+        let endTime = new Date(); // Store the end time
+        let totalTime = endTime - startTime; // Calculate total time in milliseconds
+        console.log(`Total time the webpage was open: ${totalTime / 1000} seconds`); // Convert milliseconds to seconds
     }
 }
 
@@ -35,8 +41,8 @@ async function processPage(driver) {
         }
     }
 
-    // Stay on the page for total time
-    await driver.sleep(totalTime);
+    // Wait for the total time
+    await new Promise(resolve => setTimeout(resolve, totalTime));
 }
 
 main();
