@@ -46,7 +46,6 @@ async function simulateUserBehavior(url, keyword) {
         presenceTime = Math.floor(Math.random() * 21) + 10; // Random duration between 10 to 30 seconds
     }
 
-
     // Wait for the determined presence time
     await driver.sleep(presenceTime * 1000);
 
