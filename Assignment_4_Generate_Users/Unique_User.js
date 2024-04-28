@@ -32,8 +32,6 @@ const { Builder, By, Key, until } = require('selenium-webdriver');
             await driver.sleep(10000); // Sleep for 10 seconds
         }
         
-        // Add any other checks or actions you want to perform
-        
     } finally {
         await driver.quit();
     }
