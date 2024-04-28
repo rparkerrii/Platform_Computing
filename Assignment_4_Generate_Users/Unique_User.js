@@ -1,38 +1,42 @@
-const { Builder, By, Key, until } = require('selenium-webdriver');
+const { Builder, By } = require('selenium-webdriver');
 
-(async function example() {
-    let driver = await new Builder().forBrowser('chrome').build();
+async function main() {
+    const driver = await new Builder().forBrowser('chrome').build();
+
     try {
-        // Open the local host page
-        await driver.get('http://localhost:3000/'); // Update the port if necessary
-
-        // Check for keywords
-        const keywords = ['keyword1', 'keyword2', 'keyword3'];
-        const pageSource = await driver.getPageSource();
-        const keywordFound = keywords.some(keyword => pageSource.includes(keyword));
-        if (keywordFound) {
-            console.log('Keywords found on the page!');
-            // Increase time spent on website
-            await driver.sleep(10000); // Sleep for 10 seconds
-        }
-
-        // Check for images
-        const images = await driver.findElements(By.tagName('img'));
-        if (images.length > 0) {
-            console.log('Images found on the page!');
-            // Increase time spent on website
-            await driver.sleep(10000); // Sleep for 10 seconds
-        }
-
-        // Check for links
-        const links = await driver.findElements(By.tagName('a'));
-        if (links.length > 0) {
-            console.log('Links found on the page!');
-            // Increase time spent on website
-            await driver.sleep(10000); // Sleep for 10 seconds
-        }
-        
+        await processPage(driver);
     } finally {
         await driver.quit();
     }
-})();
+}
+
+async function processPage(driver) {
+    await driver.get('http://localhost:3000/');
+
+    // Find all links
+    const links = await driver.findElements(By.tagName('a'));
+    // Find all images
+    const images = await driver.findElements(By.tagName('img'));
+    // Keywords to search for
+    const keywords = ['About', 'gaba'];
+
+    // Calculate total time to stay on the page
+    let totalTime = 0;
+
+    // Increment total time for each link and image found
+    totalTime += links.length * 10000;
+    totalTime += images.length * 10000;
+
+    // Check for each keyword and increment total time if found
+    for (const keyword of keywords) {
+        const bodyText = await driver.findElement(By.tagName('body')).getText();
+        if (bodyText.includes(keyword)) {
+            totalTime += 10000;
+        }
+    }
+
+    // Stay on the page for total time
+    await driver.sleep(totalTime);
+}
+
+main();
