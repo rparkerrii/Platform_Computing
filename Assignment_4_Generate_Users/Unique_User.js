@@ -18,7 +18,7 @@ async function processPage(driver) {
     // Find all images
     const images = await driver.findElements(By.tagName('img'));
     // Keywords to search for
-    const keywords = ['About', 'gaba'];
+    const keywords = ['About'];
 
     // Calculate total time to stay on the page
     let totalTime = 0;
