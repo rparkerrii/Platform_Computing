@@ -1,62 +1,83 @@
 const { Builder, By } = require('selenium-webdriver');
 
-async function main() {
-    const driver = await new Builder().forBrowser('chrome').build();
-
-    let startTime = new Date(); // Store the start time
-
-    try {
-        await userAction(driver);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for the page to be visible for at least 1 second
-    } finally {
-        await driver.quit();
-        let endTime = new Date(); // Store the end time
-        let totalTime = endTime - startTime; // Calculate total time in milliseconds
-        let totalTimeRounded = Math.round(totalTime / 10000) * 10; // Round to the nearest 10 seconds
-        console.log(`Total time the webpage was open: ${totalTimeRounded} seconds`); // Convert milliseconds to seconds and print rounded total time
-    }
+// Find keyword 
+async function findKeyword(driver, keyword) {
+    let pageSource = await driver.getPageSource();
+    return pageSource.toLowerCase().includes(keyword.toLowerCase());
 }
 
-async function userAction(driver) {
+// Find image
+async function countElem(driver, tagName) {
+    let elements = await driver.findElements(By.tagName(tagName));
+    return elements.length;
+}
+
+// userAction for keyword, image, and link on webpage
+async function userAction(action, driver, rewardTime, reqList) {
+    let totalRewardTime = 0;
+    if (action.toUpperCase() === "KEYWORD") {
+        for (let keyword of reqList) {
+            if (await findKeyword(driver, keyword)) {
+                console.log("found", keyword);
+                await new Promise(resolve => setTimeout(resolve, rewardTime * 1000)); // Reward time for each keyword
+                totalRewardTime += rewardTime;
+            } else {
+                console.log(keyword, " not found");
+            }
+        }
+    } else if (action.toUpperCase() === "IMAGE") {
+        let numImages = await countElem(driver, reqList[0]);
+        totalRewardTime = rewardTime * numImages;
+        await new Promise(resolve => setTimeout(resolve, rewardTime * 1000)); // Reward time for each image
+    } else if (action.toUpperCase() === "LINK") {
+        let numLinks = await countElem(driver, 'a');
+        totalRewardTime = rewardTime * numLinks;
+        await new Promise(resolve => setTimeout(resolve, rewardTime * 1000)); // Reward time for each link
+    }
+    return totalRewardTime;
+}
+
+async function main() {
+    // Open local host page
+    const driver = await new Builder().forBrowser('chrome').build();
     const localhostURL = "http://localhost:3000/";
     await driver.get(localhostURL);
 
-    // Keywords, links, and images to search for
-    const elementsToSearch = [
-        { type: 'link', tag: 'a', selector: By.tagName('a'), waitTime: 10000 },
-        { type: 'image', tag: 'img', selector: By.tagName('img'), waitTime: 10000 },
-        { type: 'keyword', keyword: 'About', waitTime: 10000 }
-    ];
-
-    // Calculate total time to stay on the page
-    let totalTime = 0;
-
-    for (const element of elementsToSearch) {
-        totalTime += await checkElement(driver, element);
+    const startTime = new Date();
+    
+    const rewardTime = 10;
+    const helper1 = ["About"]; // Keyword to search for
+    const helper2 = ["img"]; // Tag name of images
+    const helper3 = ["a"]; // Tag name of links
+    console.log("in userAction");
+    
+    // Keyword reward time
+    for (const keyword of helper1) {
+        if (findKeyword(driver, keyword)) {
+            await new Promise(resolve => setTimeout(resolve, rewardTime * 1000));
+        }
     }
 
-    // Wait for the total time
-    await new Promise(resolve => setTimeout(resolve, totalTime));
-}
-
-async function checkElement(driver, element) {
-    let totalTime = 0;
-
-    switch (element.type) {
-        case 'link':
-        case 'image':
-            const elements = await driver.findElements(element.selector);
-            totalTime += elements.length * element.waitTime;
-            break;
-        case 'keyword':
-            const bodyText = await driver.findElement(By.tagName('body')).getText();
-            if (bodyText.includes(element.keyword)) {
-                totalTime += element.waitTime;
-            }
-            break;
+    // Image reward time
+    for (const tagName of helper2) {
+        if (countElem(driver, tagName)) {
+            await new Promise(resolve => setTimeout(resolve, rewardTime * 1000));
+        }
     }
 
-    return totalTime;
+    //Link reward time
+    for (const tagName of helper3) {
+        if (countElem(driver, tagName)) {
+            await new Promise(resolve => setTimeout(resolve, rewardTime * 1000));
+        }
+    }
+
+    // Calculate time on page and print to console
+    const endTime = new Date();
+    const totalTime = endTime - startTime;
+    console.log(`Total time on the page: ${Math.round(totalTime / 1000)} seconds`);
+
+    await driver.quit();
 }
 
 main();
